@@ -5,7 +5,17 @@ import {
   Settings,
 } from "lucide-react";
 
+import {
+  Link,
+} from "react-router-dom";
+
+import {
+  useAuth,
+} from "../context/AuthContext";
+
 const Sidebar = () => {
+
+  const { user } = useAuth();
 
   return (
 
@@ -19,37 +29,62 @@ const Sidebar = () => {
       {/* MENU */}
       <div className="space-y-6">
 
-        <div className="flex items-center gap-3 text-lg hover:text-blue-400 cursor-pointer transition">
+        {/* DASHBOARD */}
+        <Link
+          to="/dashboard"
+          className="flex items-center gap-3 text-lg hover:text-blue-400 transition"
+        >
 
           <LayoutDashboard size={24} />
 
           <span>Dashboard</span>
 
-        </div>
+        </Link>
 
-        <div className="flex items-center gap-3 text-lg hover:text-blue-400 cursor-pointer transition">
+        {/* WORKERS */}
+        {(user?.role === "admin" ||
+          user?.role === "manager") && (
 
-          <Users size={24} />
+          <Link
+            to="/workers"
+            className="flex items-center gap-3 text-lg hover:text-blue-400 transition"
+          >
 
-          <span>Workers</span>
+            <Users size={24} />
 
-        </div>
+            <span>Workers</span>
 
-        <div className="flex items-center gap-3 text-lg hover:text-blue-400 cursor-pointer transition">
+          </Link>
 
-          <CreditCard size={24} />
+        )}
 
-          <span>Payments</span>
+        {/* PAYMENTS */}
+        {user?.role === "admin" && (
 
-        </div>
+          <Link
+            to="/payments"
+            className="flex items-center gap-3 text-lg hover:text-blue-400 transition"
+          >
 
-        <div className="flex items-center gap-3 text-lg hover:text-blue-400 cursor-pointer transition">
+            <CreditCard size={24} />
+
+            <span>Payments</span>
+
+          </Link>
+
+        )}
+
+        {/* SETTINGS */}
+        <Link
+          to="/settings"
+          className="flex items-center gap-3 text-lg hover:text-blue-400 transition"
+        >
 
           <Settings size={24} />
 
           <span>Settings</span>
 
-        </div>
+        </Link>
 
       </div>
 

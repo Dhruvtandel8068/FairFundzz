@@ -1,8 +1,4 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -11,58 +7,66 @@ import Dashboard from "./pages/Dashboard";
 import Workers from "./pages/Workers";
 import Payments from "./pages/Payments";
 import Settings from "./pages/Settings";
+import Reports from "./pages/Reports";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-
   return (
-
     <BrowserRouter>
-
       <Routes>
+        <Route path="/" element={<Home />} />
 
-        {/* HOME */}
-        <Route
-          path="/"
-          element={<Home />}
-        />
+        <Route path="/register" element={<Register />} />
 
-        {/* REGISTER */}
-        <Route
-          path="/register"
-          element={<Register />}
-        />
+        <Route path="/login" element={<Login />} />
 
-        {/* LOGIN */}
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-
-        {/* DASHBOARD */}
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["admin", "manager", "worker"]}>
               <Dashboard />
             </ProtectedRoute>
           }
         />
 
-        {/* WORKERS */}
         <Route
           path="/workers"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["admin", "manager", "worker"]}>
               <Workers />
             </ProtectedRoute>
           }
         />
-        <Route path="/payments" element={<Payments />} />
-        <Route path="/settings" element={<Settings />} />
 
+        <Route
+          path="/payments"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "manager", "worker"]}>
+              <Payments />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "manager", "worker"]}>
+              <Reports />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "manager", "worker"]}>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
-
     </BrowserRouter>
   );
 }

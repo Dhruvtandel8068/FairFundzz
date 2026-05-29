@@ -1,16 +1,22 @@
 import { useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    fullName: "Dhruv Tandel",
-    email: "dhruvtandel8866@gmail.com",
-    phone: "+91 8866108068",
-    businessName: "FairFundz",
-  });
+  const savedSettings = JSON.parse(
+    localStorage.getItem("settings") || "null"
+  );
+
+  const [formData, setFormData] = useState(
+    savedSettings || {
+      fullName: "Dhruv Tandel",
+      email: "dhruvtandel8866@gmail.com",
+      phone: "+91 8866108068",
+      businessName: "FairFundz",
+    }
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -36,22 +42,19 @@ const Settings = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <Sidebar />
+    <div className="flex min-h-screen bg-[#f4f7fe]">
+      <Navbar />
 
-      {/* Main Content */}
-      <div className="flex-1 ml-64 p-6">
-        {/* Header */}
+      <div className="ml-[220px] w-[calc(100%-220px)] p-6">
         <div className="bg-white rounded-2xl shadow-md p-6 mb-6 flex justify-between items-center">
           <h1 className="text-4xl font-bold">Settings</h1>
         </div>
 
-        {/* Profile Settings */}
         <div className="bg-white rounded-2xl shadow-md p-8 mb-6">
           <h2 className="text-3xl font-bold mb-8">
             Profile Settings
@@ -123,7 +126,6 @@ const Settings = () => {
           </button>
         </div>
 
-        {/* Security */}
         <div className="bg-white rounded-2xl shadow-md p-8">
           <h2 className="text-3xl font-bold mb-8">
             Security

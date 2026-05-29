@@ -1,6 +1,9 @@
 import { useState } from "react";
 
-import { useNavigate, Link } from "react-router-dom";
+import {
+  useNavigate,
+  Link,
+} from "react-router-dom";
 
 import API from "../api/axios";
 
@@ -12,10 +15,14 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
+    role: "worker",
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement
+    >
   ) => {
 
     setFormData({
@@ -33,18 +40,31 @@ const Register = () => {
 
     try {
 
-      await API.post(
+      const { data } = await API.post(
         "/auth/register",
         formData
       );
 
+      localStorage.setItem(
+        "token",
+        data.token
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
+
       alert("Registration Successful");
 
-      navigate("/login");
+      navigate("/dashboard");
 
-    } catch (error) {
+    } catch (error: any) {
 
-      console.log(error);
+      alert(
+        error.response?.data?.message ||
+        "Registration Failed"
+      );
 
     }
   };
@@ -89,29 +109,66 @@ const Register = () => {
             className="flex flex-col gap-5"
           >
 
+            {/* NAME */}
+
             <input
               type="text"
               name="name"
               placeholder="Full Name"
+              value={formData.name}
               onChange={handleChange}
               className="border p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
+
+            {/* EMAIL */}
 
             <input
               type="email"
               name="email"
               placeholder="Email Address"
+              value={formData.email}
               onChange={handleChange}
               className="border p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
+
+            {/* PASSWORD */}
 
             <input
               type="password"
               name="password"
               placeholder="Password"
+              value={formData.password}
               onChange={handleChange}
               className="border p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
+
+            {/* ROLE */}
+
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="border p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+
+              <option value="worker">
+                Worker
+              </option>
+
+              <option value="manager">
+                Manager
+              </option>
+
+              <option value="admin">
+                Admin
+              </option>
+
+            </select>
+
+            {/* BUTTON */}
 
             <button className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-xl text-lg font-semibold transition">
 
