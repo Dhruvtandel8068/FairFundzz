@@ -2,19 +2,52 @@ import mongoose from "mongoose";
 
 const workerSchema = new mongoose.Schema(
   {
-    fullName: {
+    name: {
       type: String,
       required: true,
+      trim: true,
     },
 
-    email: {
+    role: {
       type: String,
       required: true,
-      unique: true,
+      trim: true,
     },
 
-    password: {
+    phone: {
       type: String,
+      required: true,
+      trim: true,
+    },
+
+    city: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    dailyWage: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    minimumWage: {
+      type: Number,
+      required: true,
+      default: 450,
+      min: 0,
+    },
+
+    status: {
+      type: String,
+      enum: ["Active", "Inactive"],
+      default: "Active",
+    },
+
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

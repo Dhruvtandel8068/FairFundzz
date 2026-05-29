@@ -1,31 +1,26 @@
 import { Navigate } from "react-router-dom";
 
-import {
-  useAuth,
-} from "../context/AuthContext";
+type ProtectedRouteProps = {
+  children: React.ReactNode;
+  allowedRoles?: string[];
+};
 
 const ProtectedRoute = ({
   children,
-  allowedRoles,
-}: any) => {
+  allowedRoles = [],
+}: ProtectedRouteProps) => {
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  const { user } = useAuth();
-
-  if (!user) {
-
-    return <Navigate to="/login" />;
-
+  if (!token) {
+    return <Navigate to="/login" replace />;
   }
 
   if (
-    allowedRoles &&
-    !allowedRoles.includes(user.role)
+    allowedRoles.length > 0 &&
+    !allowedRoles.includes(user?.role)
   ) {
-
-    return (
-      <Navigate to="/dashboard" />
-    );
-
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;

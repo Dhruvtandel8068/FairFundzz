@@ -1,19 +1,23 @@
 import express from "express";
-
-const router = express.Router();
+import protect from "../middleware/authMiddleware.js";
 
 import {
   createWorker,
   getWorkers,
+  updateWorker,
   deleteWorker,
 } from "../controllers/workerController.js";
 
-import protect from "../middleware/authMiddleware.js";
+const router = express.Router();
 
-router.post("/", protect, createWorker);
+router
+  .route("/")
+  .post(protect, createWorker)
+  .get(protect, getWorkers);
 
-router.get("/", protect, getWorkers);
-
-router.delete("/:id", protect, deleteWorker);
+router
+  .route("/:id")
+  .put(protect, updateWorker)
+  .delete(protect, deleteWorker);
 
 export default router;

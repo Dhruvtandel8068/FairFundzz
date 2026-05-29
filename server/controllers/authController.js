@@ -1,111 +1,120 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import generateToken from "../utils/generateToken.js";
 
 export const registerUser = async (req, res) => {
+  const { name, email, password, role } = req.body;
 
-  try {
-
-    const {
-      name,
-      email,
-      password,
-      role,
-    } = req.body;
-
-    // CHECK EXISTING USER
-    const existingUser =
-      await User.findOne({
-        email,
-      });
-
-    if (existingUser) {
-
-      return res.status(400).json({
-        message: "User already exists",
-      });
-
-    }
-
-    // HASH PASSWORD
-    const hashedPassword =
-      await bcrypt.hash(password, 10);
-
-    // CREATE USER
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-    });
-
-    // TOKEN
-    const token = jwt.sign(
-      { id: user._id },
-      "fairfundzsecret",
-      {
-        expiresIn: "7d",
-      }
-    );
-
-    res.status(201).json({
-      token,
-      user,
-    });
-
-  } catch (error) {
-
-    console.log(error);
-
-    res.status(500).json({
-      message: "Server Error",
-    });
-
+  if (!name || !email || !password) {
+    res.status(400);
+    throw new Error("Name, email and password are required");
   }
+
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    res.status(400);
+    throw new Error("User already exists");
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await User.create({
+    name,
+    email,
+    password: hashedPassword,
+    role:"worker",
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "User registered successfully",
+    token: generateToken(user._id),
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  });
 };
 
-
 export const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("Email and password are required");
+  }
 
-    if (!user) {
-      return res.status(400).json({
-        message: "Invalid Email",
-      });
-    }
+  const user = await User.findOne({ email });
 
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
+  if (!user) {
+    res.status(401);
+    throw new Error("Invalid email or password");
+  }
 
-    if (!isMatch) {
-      return res.status(400).json({
-        message: "Invalid Password",
-      });
-    }
+  const isMatch = await bcrypt.compare(password, user.password);
 
-    const token = jwt.sign(
-      { id: user._id },
-      "fairfundzsecret",
-      {
-        expiresIn: "7d",
-      }
-    );
+  if (!isMatch) {
+    res.status(401);
+    throw new Error("Invalid email or password");
+  }
 
-    res.json({
-      token,
-      user,
-    });
+  res.json({
+    success: true,
+    message: "Login successful",
+    token: generateToken(user._id),
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  });
+};
 
-  } catch (error) {
-    console.log(error);
+export const changePassword = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
 
-    res.status(500).json({
-      message: "Server Error",
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Old password and new password are required",
     });
   }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message: "New password must be at least 6 characters",
+    });
+  }
+
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+  if (!isMatch) {
+    return res.status(400).json({
+      success: false,
+      message: "Old password is incorrect",
+    });
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+
+  await user.save();
+
+  res.json({
+    success: true,
+    message: "Password changed successfully",
+  });
 };

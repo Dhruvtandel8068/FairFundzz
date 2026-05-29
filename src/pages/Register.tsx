@@ -147,26 +147,7 @@ const Register = () => {
 
             {/* ROLE */}
 
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="border p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-
-              <option value="worker">
-                Worker
-              </option>
-
-              <option value="manager">
-                Manager
-              </option>
-
-              <option value="admin">
-                Admin
-              </option>
-
-            </select>
+          
 
             {/* BUTTON */}
 

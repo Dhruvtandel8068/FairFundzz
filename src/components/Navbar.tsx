@@ -5,36 +5,69 @@ import {
   CreditCard,
   Settings,
   FileText,
+  CalendarCheck,
+  Bell,
+  ReceiptText,
 } from "lucide-react";
 
 const Navbar = () => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const role = user?.role || "worker";
+
   const menuItems = [
     {
       name: "Dashboard",
       path: "/dashboard",
       icon: <LayoutDashboard size={22} />,
+      roles: ["admin", "manager", "worker"],
     },
     {
       name: "Workers",
       path: "/workers",
       icon: <Users size={22} />,
+      roles: ["admin", "manager"],
+    },
+    {
+      name: "Attendance",
+      path: "/attendance",
+      icon: <CalendarCheck size={22} />,
+      roles: ["admin", "manager"],
     },
     {
       name: "Payments",
       path: "/payments",
       icon: <CreditCard size={22} />,
+      roles: ["admin", "manager"],
     },
     {
       name: "Reports",
       path: "/reports",
       icon: <FileText size={22} />,
+      roles: ["admin"],
+    },
+    {
+      name: "Payslips",
+      path: "/payslips",
+      icon: <ReceiptText size={22} />,
+      roles: ["admin", "manager", "worker"],
+    },
+    {
+      name: "Notifications",
+      path: "/notifications",
+      icon: <Bell size={22} />,
+      roles: ["admin", "manager", "worker"],
     },
     {
       name: "Settings",
       path: "/settings",
       icon: <Settings size={22} />,
+      roles: ["admin", "manager", "worker"],
     },
   ];
+
+  const visibleItems = menuItems.filter((item) =>
+    item.roles.includes(role)
+  );
 
   return (
     <div className="w-[220px] min-h-screen bg-[#020B33] text-white fixed left-0 top-0 z-50">
@@ -42,8 +75,12 @@ const Navbar = () => {
         FairFundz
       </div>
 
+      <div className="px-6 text-sm text-blue-200">
+        Role: {role.toUpperCase()}
+      </div>
+
       <div className="mt-8 flex flex-col gap-2 px-4">
-        {menuItems.map((item) => (
+        {visibleItems.map((item) => (
           <NavLink
             key={item.name}
             to={item.path}
