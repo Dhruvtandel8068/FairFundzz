@@ -17,6 +17,13 @@ import Attendance from "./pages/Attendance";
 import Payslips from "./pages/Payslips";
 import Notifications from "./pages/Notifications";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Leaves from "./pages/Leaves";
+import AuditLogs from "./pages/AuditLogs";
+import Documents from "./pages/Documents";
+import Payroll from "./pages/Payroll";
+import Users from "./pages/Users";
+
+
 
 function App() {
   return (
@@ -37,11 +44,20 @@ function App() {
           }
         />
 
+
         <Route
           path="/workers"
           element={
             <ProtectedRoute allowedRoles={["admin", "manager"]}>
               <Workers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/audit-logs"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AuditLogs />
             </ProtectedRoute>
           }
         />
@@ -94,6 +110,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/leaves"
+          element={
+            <ProtectedRoute 
+            allowedRoles={["admin", "manager", "worker"]}
+            >
+              <Leaves />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/settings"
@@ -105,6 +131,26 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/documents"
+          element={
+            <ProtectedRoute 
+              allowedRoles={["admin", "manager", "worker"]}
+            >
+              <Documents />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payroll"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "manager"]}
+            >
+              <Payroll />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/users" element={<ProtectedRoute allowedRoles={["admin"]}><Users /></ProtectedRoute>} />
 
         <Route
           path="*"

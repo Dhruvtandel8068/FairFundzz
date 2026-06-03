@@ -7,18 +7,14 @@ import { ShieldCheck } from "lucide-react";
 const Settings = () => {
   const navigate = useNavigate();
 
-  const savedSettings = JSON.parse(
-    localStorage.getItem("settings") || "null"
-  );
+  const loggedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
-  const [formData, setFormData] = useState(
-    savedSettings || {
-      fullName: "Dhruv Tandel",
-      email: "dhruvtandel8866@gmail.com",
-      phone: "+91 8866108068",
-      businessName: "FairFundz",
-    }
-  );
+  const [formData, setFormData] = useState({
+    fullName: loggedUser?.name || "",
+    email: loggedUser?.email || "",
+    phone: loggedUser?.phone || "",
+    businessName: "FairFundz",
+  });
 
   const [passwordForm, setPasswordForm] = useState({
     oldPassword: "",
@@ -26,7 +22,9 @@ const Settings = () => {
     confirmPassword: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfileChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -43,8 +41,16 @@ const Settings = () => {
   };
 
   const handleSave = () => {
-    localStorage.setItem("settings", JSON.stringify(formData));
-    alert("Settings saved successfully!");
+    const updatedUser = {
+      ...loggedUser,
+      name: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+    };
+
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+
+    alert("Profile updated locally");
   };
 
   const handleChangePassword = async (e: React.FormEvent) => {
@@ -90,6 +96,7 @@ const Settings = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("settings");
     navigate("/login");
   };
 
@@ -116,7 +123,7 @@ const Settings = () => {
                 type="text"
                 name="fullName"
                 value={formData.fullName}
-                onChange={handleChange}
+                onChange={handleProfileChange}
                 className="w-full border rounded-xl px-4 py-3"
               />
             </div>
@@ -129,7 +136,7 @@ const Settings = () => {
                 type="email"
                 name="email"
                 value={formData.email}
-                onChange={handleChange}
+                onChange={handleProfileChange}
                 className="w-full border rounded-xl px-4 py-3"
               />
             </div>
@@ -142,7 +149,8 @@ const Settings = () => {
                 type="text"
                 name="phone"
                 value={formData.phone}
-                onChange={handleChange}
+                onChange={handleProfileChange}
+                placeholder="Enter phone number"
                 className="w-full border rounded-xl px-4 py-3"
               />
             </div>
@@ -155,7 +163,7 @@ const Settings = () => {
                 type="text"
                 name="businessName"
                 value={formData.businessName}
-                onChange={handleChange}
+                onChange={handleProfileChange}
                 className="w-full border rounded-xl px-4 py-3"
               />
             </div>
@@ -257,9 +265,7 @@ const Settings = () => {
         </div>
 
         <div className="bg-white rounded-2xl shadow-md p-8">
-          <h2 className="text-3xl font-bold mb-8">
-            Security
-          </h2>
+          <h2 className="text-3xl font-bold mb-8">Security</h2>
 
           <button
             onClick={handleLogout}

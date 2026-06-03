@@ -1,11 +1,14 @@
 import Worker from "../models/Worker.js";
+import createAuditLog from "../utils/createAuditLog.js";
 
 export const createWorker = async (req, res) => {
   const { name, role, phone, city, dailyWage, minimumWage } = req.body;
 
   if (!name || !role || !phone || !city || !dailyWage) {
-    res.status(400);
-    throw new Error("Please fill all required fields");
+    return res.status(400).json({
+      success: false,
+      message: "Please fill all required fields",
+    });
   }
 
   const worker = await Worker.create({
@@ -13,9 +16,16 @@ export const createWorker = async (req, res) => {
     role,
     phone,
     city,
-    dailyWage,
-    minimumWage: minimumWage || 450,
+    dailyWage: Number(dailyWage),
+    minimumWage: minimumWage ? Number(minimumWage) : 450,
     createdBy: req.user._id,
+  });
+
+  await createAuditLog({
+    req,
+    action: "CREATE_WORKER",
+    module: "workers",
+    description: `Created worker ${worker.name}`,
   });
 
   res.status(201).json({
@@ -44,18 +54,31 @@ export const updateWorker = async (req, res) => {
   });
 
   if (!worker) {
-    res.status(404);
-    throw new Error("Worker not found");
+    return res.status(404).json({
+      success: false,
+      message: "Worker not found",
+    });
   }
 
   const updatedWorker = await Worker.findByIdAndUpdate(
     req.params.id,
-    req.body,
+    {
+      ...req.body,
+      dailyWage: Number(req.body.dailyWage),
+      minimumWage: Number(req.body.minimumWage),
+    },
     {
       new: true,
       runValidators: true,
     }
   );
+
+  await createAuditLog({
+    req,
+    action: "UPDATE_WORKER",
+    module: "workers",
+    description: `Updated worker ${updatedWorker.name}`,
+  });
 
   res.json({
     success: true,
@@ -71,11 +94,22 @@ export const deleteWorker = async (req, res) => {
   });
 
   if (!worker) {
-    res.status(404);
-    throw new Error("Worker not found");
+    return res.status(404).json({
+      success: false,
+      message: "Worker not found",
+    });
   }
 
+  const workerName = worker.name;
+
   await worker.deleteOne();
+
+  await createAuditLog({
+    req,
+    action: "DELETE_WORKER",
+    module: "workers",
+    description: `Deleted worker ${workerName}`,
+  });
 
   res.json({
     success: true,

@@ -1,4 +1,8 @@
 import { NavLink } from "react-router-dom";
+import { CalendarDays } from "lucide-react";
+import { FolderOpen } from "lucide-react";
+import { WalletCards } from "lucide-react";
+import { UserCog } from "lucide-react";
 import {
   LayoutDashboard,
   Users,
@@ -62,6 +66,30 @@ const Navbar = () => {
       path: "/settings",
       icon: <Settings size={22} />,
       roles: ["admin", "manager", "worker"],
+    },
+    {
+      name: "Leaves",
+      path: "/leaves",
+      icon: <CalendarDays size={17} />,
+      roles: ["admin", "manager", "worker"],
+    },
+    {
+      name: "Documents",
+      path: "/documents",
+      icon: <FolderOpen size={22} />,
+      roles: ["admin", "manager", "worker"],
+    },
+    {
+      name: "Payroll",
+      path: "/payroll",
+      icon: <WalletCards size={22} />,
+      roles: ["admin", "manager"],
+    },
+    {
+      name: "Users",
+      path: "/users",
+      icon: <UserCog size={22} />,
+      roles: ["admin"],
     },
   ];
 

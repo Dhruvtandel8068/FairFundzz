@@ -11,7 +11,11 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import payslipRoutes from "./routes/payslipRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
-
+import leaveRoutes from "./routes/leaveRoutes.js";
+import auditLogRoutes from "./routes/auditLogRoutes.js";
+import documentRoutes from "./routes/documentRoutes.js";
+import payrollRoutes from "./routes/payrollRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 
 
@@ -45,7 +49,11 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/payslips", payslipRoutes);
 app.use("/api/notifications", notificationRoutes);
-
+app.use("/api/leaves", leaveRoutes);
+app.use("/api/audit-logs", auditLogRoutes);
+app.use("/api/documents", documentRoutes);
+app.use("/api/payrolls", payrollRoutes);
+app.use("/api/users", userRoutes);
 
 
 
