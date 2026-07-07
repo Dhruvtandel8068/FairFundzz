@@ -16,7 +16,7 @@ import auditLogRoutes from "./routes/auditLogRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import payrollRoutes from "./routes/payrollRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
-
+import complianceRoutes from "./routes/complianceRoutes.js";
 
 
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
@@ -54,7 +54,7 @@ app.use("/api/audit-logs", auditLogRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/payrolls", payrollRoutes);
 app.use("/api/users", userRoutes);
-
+app.use("/api/compliance", complianceRoutes);
 
 
 app.use(notFound);

@@ -22,7 +22,7 @@ import AuditLogs from "./pages/AuditLogs";
 import Documents from "./pages/Documents";
 import Payroll from "./pages/Payroll";
 import Users from "./pages/Users";
-
+import Compliance from "./pages/Compliance";
 
 
 function App() {
@@ -147,6 +147,14 @@ function App() {
             <ProtectedRoute allowedRoles={["admin", "manager"]}
             >
               <Payroll />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/compliance"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "manager"]}>
+              <Compliance />
             </ProtectedRoute>
           }
         />

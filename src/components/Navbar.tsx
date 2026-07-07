@@ -3,6 +3,7 @@ import { CalendarDays } from "lucide-react";
 import { FolderOpen } from "lucide-react";
 import { WalletCards } from "lucide-react";
 import { UserCog } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import {
   LayoutDashboard,
   Users,
@@ -90,6 +91,12 @@ const Navbar = () => {
       path: "/users",
       icon: <UserCog size={22} />,
       roles: ["admin"],
+    },
+    {
+      name: "Compliance",
+      path: "/compliance",
+      icon: <ShieldCheck size={22} />,
+      roles: ["admin", "manager"],
     },
   ];
 
